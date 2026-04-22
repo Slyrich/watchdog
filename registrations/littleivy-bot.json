@@ -1,0 +1,10 @@
+{
+  "name": "LittleIvy-Bot",
+  "project": "little-ivy",
+  "check": "process",
+  "enabled": true,
+  "restart_cmd": "wscript.exe \"C:\\Users\\wyric\\little-ivy\\start_bot.vbs\"",
+  "cwd": "C:\\Users\\wyric\\little-ivy",
+  "match": "bot.py",
+  "max_instances": 1
+}

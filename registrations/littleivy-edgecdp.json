@@ -1,0 +1,9 @@
+{
+  "name": "LittleIvy-EdgeCDP",
+  "project": "little-ivy",
+  "check": "port",
+  "enabled": true,
+  "restart_cmd": "wscript.exe \"C:\\Users\\wyric\\little-ivy\\start_edge_debug.vbs\"",
+  "cwd": "C:\\Users\\wyric\\little-ivy",
+  "port": 9223
+}

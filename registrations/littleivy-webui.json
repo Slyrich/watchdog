@@ -1,0 +1,9 @@
+{
+  "name": "LittleIvy-WebUI",
+  "project": "little-ivy",
+  "check": "port",
+  "enabled": true,
+  "restart_cmd": "python C:\\Users\\wyric\\little-ivy\\web\\app.py",
+  "cwd": "C:\\Users\\wyric\\little-ivy",
+  "port": 5000
+}

@@ -1,0 +1,10 @@
+{
+  "name": "LittleIvy-Tunnel",
+  "project": "little-ivy",
+  "check": "file_age",
+  "enabled": true,
+  "restart_cmd": "python C:\\Users\\wyric\\little-ivy\\update_vercel_tunnel.py",
+  "cwd": "C:\\Users\\wyric\\little-ivy",
+  "file": "C:\\Users\\wyric\\little-ivy\\tunnel_url.txt",
+  "max_age_seconds": 7200
+}

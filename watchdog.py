@@ -154,15 +154,30 @@ def check_file_age(reg: dict):
 
     if not filepath.exists():
         logger.info(f"[{reg['name']}] File missing: {filepath} — restarting")
+        _kill_match_before_restart(reg)
         start_process(reg)
         return
 
     age = time.time() - filepath.stat().st_mtime
     if age > max_age:
         logger.info(f"[{reg['name']}] File age {int(age)}s > {max_age}s — restarting")
+        _kill_match_before_restart(reg)
         start_process(reg)
     else:
         logger.debug(f"[{reg['name']}] OK (file age {int(age)}s)")
+
+
+def _kill_match_before_restart(reg: dict):
+    """If registration has kill_match, kill all matching processes before restarting."""
+    kill_match = reg.get("kill_match")
+    if not kill_match:
+        return
+    procs = find_processes(kill_match)
+    if procs:
+        logger.info(f"[{reg['name']}] Killing {len(procs)} old instance(s) matching '{kill_match}'")
+        for proc in procs:
+            kill_process(proc)
+        time.sleep(1)
 
 
 # ── Main ──────────────────────────────────────────────────────────────────────

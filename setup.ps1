@@ -3,7 +3,7 @@
 # 以管理员身份运行：
 #   powershell -ExecutionPolicy Bypass -File "C:\watchdog\setup.ps1"
 
-$python = 'C:\Python314\python.exe'
+$python = 'C:\Python314\pythonw.exe'
 
 $action = New-ScheduledTaskAction `
     -Execute $python `

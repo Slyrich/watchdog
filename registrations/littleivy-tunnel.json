@@ -6,5 +6,6 @@
   "restart_cmd": "python C:\\Users\\wyric\\little-ivy\\update_vercel_tunnel.py",
   "cwd": "C:\\Users\\wyric\\little-ivy",
   "file": "C:\\Users\\wyric\\little-ivy\\tunnel_url.txt",
-  "max_age_seconds": 7200
+  "max_age_seconds": 7200,
+  "kill_match": "update_vercel_tunnel.py"
 }

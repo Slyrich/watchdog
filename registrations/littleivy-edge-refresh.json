@@ -1,0 +1,10 @@
+{
+  "name": "LittleIvy-EdgeRefresh",
+  "project": "little-ivy",
+  "check": "schedule",
+  "enabled": true,
+  "daily_at": "02:00",
+  "kill_match": "--remote-debugging-port=9223",
+  "restart_cmd": "wscript.exe \"C:\\Users\\wyric\\little-ivy\\start_edge_debug.vbs\"",
+  "cwd": "C:\\Users\\wyric\\little-ivy"
+}

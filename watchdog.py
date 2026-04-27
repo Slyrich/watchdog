@@ -167,6 +167,35 @@ def check_file_age(reg: dict):
         logger.debug(f"[{reg['name']}] OK (file age {int(age)}s)")
 
 
+def check_schedule(reg: dict):
+    """Restart once per day at a specified time (HH:MM, 24h)."""
+    daily_at = reg.get("daily_at", "02:00")
+    name = reg["name"]
+
+    state_dir = ROOT / "state"
+    state_dir.mkdir(exist_ok=True)
+    state_file = state_dir / f"{name.lower().replace(' ', '_').replace('-', '_')}.json"
+
+    last_date = None
+    if state_file.exists():
+        try:
+            last_date = json.loads(state_file.read_text(encoding="utf-8")).get("last_restart_date")
+        except Exception:
+            pass
+
+    now = datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    scheduled = datetime.strptime(f"{today} {daily_at}", "%Y-%m-%d %H:%M")
+
+    if now >= scheduled and last_date != today:
+        logger.info(f"[{name}] Daily restart at {daily_at} — restarting")
+        _kill_match_before_restart(reg)
+        start_process(reg)
+        state_file.write_text(json.dumps({"last_restart_date": today}), encoding="utf-8")
+    else:
+        logger.debug(f"[{name}] OK (last restart: {last_date or 'never'}, scheduled: {daily_at})")
+
+
 def _kill_match_before_restart(reg: dict):
     """If registration has kill_match, kill all matching processes before restarting."""
     kill_match = reg.get("kill_match")
@@ -213,6 +242,8 @@ def main():
                 check_port(reg)
             elif check_type == "file_age":
                 check_file_age(reg)
+            elif check_type == "schedule":
+                check_schedule(reg)
             else:
                 logger.warning(f"[{reg.get('name')}] Unknown check type: {check_type}")
         except Exception as e:

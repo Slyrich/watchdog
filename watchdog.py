@@ -119,22 +119,56 @@ def start_process(reg: dict):
 
 # ── Check handlers ────────────────────────────────────────────────────────────
 
+def _is_running(proc) -> bool:
+    try:
+        return proc.is_running()
+    except (psutil.NoSuchProcess, psutil.AccessDenied):
+        return False
+
+
 def check_process(reg: dict):
     match = reg["match"]
     max_inst = reg.get("max_instances", 1)
+    max_mem_mb = reg.get("max_memory_mb")
     procs = find_processes(match)
 
-    if len(procs) == 0:
-        logger.info(f"[{reg['name']}] Not running — restarting")
-        start_process(reg)
-    elif len(procs) > max_inst:
-        logger.info(f"[{reg['name']}] {len(procs)} instances (max {max_inst}) — killing extras, restarting")
-        for proc in procs:
+    # Kill processes exceeding memory threshold
+    if max_mem_mb and procs:
+        for proc in list(procs):
+            try:
+                mem_mb = proc.memory_info().rss / (1024 * 1024)
+                if mem_mb > max_mem_mb:
+                    logger.info(f"[{reg['name']}] PID {proc.pid} using {mem_mb:.0f}MB > {max_mem_mb}MB — killing")
+                    kill_process(proc)
+                    procs.remove(proc)
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                procs.remove(proc)
+        if not procs:
+            time.sleep(1)
+
+    # Kill oldest extras when over max_instances
+    if len(procs) > max_inst:
+        try:
+            procs_sorted = sorted(procs, key=lambda p: p.create_time())
+        except Exception:
+            procs_sorted = procs
+        extras = procs_sorted[:len(procs_sorted) - max_inst]
+        logger.info(f"[{reg['name']}] {len(procs)} instances (max {max_inst}) — killing {len(extras)} oldest")
+        for proc in extras:
             kill_process(proc)
+        procs = procs_sorted[len(procs_sorted) - max_inst:]
         time.sleep(1)
-        start_process(reg)
+
+    # Restart if none left (only if restart_cmd provided)
+    live = [p for p in procs if _is_running(p)]
+    if not live:
+        if reg.get("restart_cmd"):
+            logger.info(f"[{reg['name']}] Not running — restarting")
+            start_process(reg)
+        else:
+            logger.debug(f"[{reg['name']}] Not running (no restart_cmd — managed externally)")
     else:
-        logger.debug(f"[{reg['name']}] OK ({len(procs)} instance(s))")
+        logger.debug(f"[{reg['name']}] OK ({len(live)} instance(s))")
 
 
 def check_port(reg: dict):

@@ -5,6 +5,6 @@
   "enabled": true,
   "daily_at": "02:00",
   "kill_match": "--remote-debugging-port=9223",
-  "restart_cmd": "wscript.exe \"C:\\Users\\wyric\\little-ivy\\start_edge_debug.vbs\"",
+  "restart_cmd": "\"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe\" --remote-debugging-port=9223 --user-data-dir=\"C:\\Users\\wyric\\edge-brightwheel\"",
   "cwd": "C:\\Users\\wyric\\little-ivy"
 }

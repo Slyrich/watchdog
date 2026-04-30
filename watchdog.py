@@ -176,6 +176,7 @@ def check_port(reg: dict):
     if not port_open(port):
         logger.info(f"[{reg['name']}] Port {port} not open — restarting")
         kill_port_holder(port)
+        _kill_match_before_restart(reg)
         time.sleep(1)
         start_process(reg)
     else:

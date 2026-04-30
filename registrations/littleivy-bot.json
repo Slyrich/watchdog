@@ -3,7 +3,7 @@
   "project": "little-ivy",
   "check": "process",
   "enabled": true,
-  "restart_cmd": "wscript.exe \"C:\\Users\\wyric\\little-ivy\\start_bot.vbs\"",
+  "restart_cmd": "python C:\\Users\\wyric\\little-ivy\\bot.py",
   "cwd": "C:\\Users\\wyric\\little-ivy",
   "match": "bot.py",
   "max_instances": 1
